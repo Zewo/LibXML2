@@ -85,7 +85,7 @@ swift build
 - Linux
 
 ```
-swift build -Xlinker -rpath -Xlinker $(pwd)/.build/debug/
+swift build -Xcc -I/usr/include/libxml2 -Xlinker -rpath -Xlinker $(pwd)/.build/debug/
 ```
 
 ## Support
