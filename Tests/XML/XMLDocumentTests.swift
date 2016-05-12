@@ -68,7 +68,7 @@ class XMLTests: XCTestCase {
 }
 
 extension XMLTests {
-    static var allTests: [(String, XMLTests -> () throws -> Void)] {
+    static var allTests: [(String, (XMLTests) -> () throws -> Void)] {
         return [
            ("testReality", testReality),
         ]

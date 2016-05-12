@@ -143,12 +143,10 @@ public class XMLDocument {
     
     /// Root node of this XML document object.
     public lazy var rootNode: XMLNode? = {
-        let rootNodePointer = xmlDocGetRootElement(self.xmlDoc)
-        if rootNodePointer == nil {
+        guard let rootNodePointer = xmlDocGetRootElement(self.xmlDoc) else {
             return nil
-        } else {
-            return XMLNode(xmlNode: rootNodePointer, xmlDocument: self)
         }
+        return XMLNode(xmlNode: rootNodePointer, xmlDocument: self)
     }()
     
     /**

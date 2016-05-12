@@ -200,7 +200,7 @@ public class XMLNode {
             htmlNodeDump(buffer, self.document.htmlDoc, self.xmlNode)
         }
         
-        let result = String.fromXmlChar(buffer.pointee.content)
+        let result = String.fromXmlChar(buffer!.pointee.content)
         xmlBufferFree(buffer)
         return result
     }()
@@ -281,20 +281,19 @@ public class XMLNode {
     - returns: An array of XMLNode, an empty array will be returned if XPath matches no nodes.
     */
     public func xPath(_ xPath: String) -> [XMLNode] {
-        let xPathContext = xmlXPathNewContext(self.document.xmlDoc)
-        if xPathContext == nil {
+        guard let xPathContext = xmlXPathNewContext(self.document.xmlDoc) else {
             // Unable to create XPath context.
             return []
         }
         
         xPathContext.pointee.node = self.xmlNode
 
-        let xPathObject = xPath.withCString { xPathPtr in
+        let _xPathObject = xPath.withCString { xPathPtr in
             xmlXPathEvalExpression(UnsafePointer<xmlChar>(xPathPtr), xPathContext)
         }
 
         xmlXPathFreeContext(xPathContext)
-        if xPathObject == nil {
+        guard let xPathObject = _xPathObject else {
             // Unable to evaluate XPath.
             return []
         }
