@@ -109,10 +109,10 @@ public class XMLNode {
             var childNodePointer = xmlNode.pointee.children
             while childNodePointer != nil {
                 if keepTextNode || xmlNodeIsText(childNodePointer) == 0 {
-                    let childNode = XMLNode(xmlNode: childNodePointer, xmlDocument: document, keepTextNode: keepTextNode)
+                    let childNode = XMLNode(xmlNode: childNodePointer!, xmlDocument: document, keepTextNode: keepTextNode)
                     _children.append(childNode)
                 }
-                childNodePointer = childNodePointer.pointee.next
+                childNodePointer = childNodePointer!.pointee.next
             }
             _childrenHasBeenCalculated = true
             _keepTextNodePrevious = keepTextNode
@@ -125,13 +125,13 @@ public class XMLNode {
         var first = xmlNode.pointee.children
         if first == nil { return nil }
         if keepTextNode {
-            return XMLNode(xmlNode: first, xmlDocument: document, keepTextNode: keepTextNode)
+            return XMLNode(xmlNode: first!, xmlDocument: document, keepTextNode: keepTextNode)
         } else {
             while xmlNodeIsText(first) != 0 {
-                first = first.pointee.next
+                first = first!.pointee.next
                 if first == nil { return nil }
             }
-            return XMLNode(xmlNode: first, xmlDocument: document, keepTextNode: keepTextNode)
+            return XMLNode(xmlNode: first!, xmlDocument: document, keepTextNode: keepTextNode)
         }
     }
     
@@ -140,13 +140,13 @@ public class XMLNode {
         var last = xmlNode.pointee.last
         if last == nil { return nil }
         if keepTextNode {
-            return XMLNode(xmlNode: last, xmlDocument: document, keepTextNode: keepTextNode)
+            return XMLNode(xmlNode: last!, xmlDocument: document, keepTextNode: keepTextNode)
         } else {
             while xmlNodeIsText(last) != 0 {
-                last = last.pointee.prev
+                last = last!.pointee.prev
                 if last == nil { return nil }
             }
-            return XMLNode(xmlNode: last, xmlDocument: document, keepTextNode: keepTextNode)
+            return XMLNode(xmlNode: last!, xmlDocument: document, keepTextNode: keepTextNode)
         }
     }
     
@@ -166,13 +166,13 @@ public class XMLNode {
         var next = xmlNode.pointee.next
         if next == nil { return nil }
         if keepTextNode {
-            return XMLNode(xmlNode: next, xmlDocument: document, keepTextNode: keepTextNode)
+            return XMLNode(xmlNode: next!, xmlDocument: document, keepTextNode: keepTextNode)
         } else {
             while xmlNodeIsText(next) != 0 {
-                next = next.pointee.next
+                next = next!.pointee.next
                 if next == nil { return nil }
             }
-            return XMLNode(xmlNode: next, xmlDocument: document, keepTextNode: keepTextNode)
+            return XMLNode(xmlNode: next!, xmlDocument: document, keepTextNode: keepTextNode)
         }
     }
     
@@ -181,13 +181,13 @@ public class XMLNode {
         var prev = xmlNode.pointee.prev
         if prev == nil { return nil }
         if keepTextNode {
-            return XMLNode(xmlNode: prev, xmlDocument: document, keepTextNode: keepTextNode)
+            return XMLNode(xmlNode: prev!, xmlDocument: document, keepTextNode: keepTextNode)
         } else {
             while xmlNodeIsText(prev) != 0 {
-                prev = prev.pointee.prev
+                prev = prev!.pointee.prev
                 if prev == nil { return nil }
             }
-            return XMLNode(xmlNode: prev, xmlDocument: document, keepTextNode: keepTextNode)
+            return XMLNode(xmlNode: prev!, xmlDocument: document, keepTextNode: keepTextNode)
         }
     }
     
@@ -299,15 +299,15 @@ public class XMLNode {
         }
         
         let nodeSet = xPathObject.pointee.nodesetval
-        if nodeSet == nil || nodeSet.pointee.nodeNr == 0 || nodeSet.pointee.nodeTab == nil {
+        if nodeSet == nil || nodeSet!.pointee.nodeNr == 0 || nodeSet!.pointee.nodeTab == nil {
             // NodeSet is nil.
             xmlXPathFreeObject(xPathObject)
             return []
         }
         
         var resultNodes = [XMLNode]()
-        for i in 0 ..< Int(nodeSet.pointee.nodeNr) {
-            let xmlNode = XMLNode(xmlNode: nodeSet.pointee.nodeTab[i]!, xmlDocument: self.document, keepTextNode: keepTextNode)
+        for i in 0 ..< Int(nodeSet!.pointee.nodeNr) {
+            let xmlNode = XMLNode(xmlNode: nodeSet!.pointee.nodeTab[i]!, xmlDocument: self.document, keepTextNode: keepTextNode)
             resultNodes.append(xmlNode)
         }
         
