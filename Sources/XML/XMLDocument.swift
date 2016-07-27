@@ -57,7 +57,7 @@ public class XMLDocument {
     - returns: The initialized XML document object or nil if the object could not be initialized.
     */
     public required init?(data: Data?, isXML: Bool) {
-        if let data = data where data.count > 0 {
+        if let data = data, data.count > 0 {
             self.isXML = isXML
             self.data = data
 
