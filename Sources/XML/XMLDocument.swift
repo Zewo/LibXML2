@@ -57,29 +57,27 @@ public class XMLDocument {
     - returns: The initialized XML document object or nil if the object could not be initialized.
     */
     public required init?(data: Data?, isXML: Bool) {
-        if let data = data, data.count > 0 {
-            self.isXML = isXML
-            self.data = data
+        guard let data = data, data.count > 0 else { return nil }
 
-            var utf8Encoding: Int8 = 1// = UnsafeMutablePointer<Int8>()
+        self.isXML = isXML
+        self.data = data
 
-            if isXML {
-                let options = CInt(XML_PARSE_RECOVER.rawValue)
-                data.withUnsafeBufferPointer { dataPtr in
-                    let pointer = UnsafePointer<Int8>(dataPtr.baseAddress)
-                    xmlDoc = xmlReadMemory(pointer, Int32(dataPtr.count), nil, &utf8Encoding, options)
-                }
-            } else {
-                let options = CInt(HTML_PARSE_RECOVER.rawValue | HTML_PARSE_NOWARNING.rawValue | HTML_PARSE_NOERROR.rawValue)
-                data.withUnsafeBufferPointer { dataPtr in
-                    let pointer = UnsafePointer<Int8>(dataPtr.baseAddress)
-                    xmlDoc = htmlReadMemory(pointer, Int32(dataPtr.count), nil, &utf8Encoding, options)
-                }
-            }
-            if xmlDoc == nil { return nil }
+        var utf8Encoding: Int8 = 1// = UnsafeMutablePointer<Int8>()
+
+        let options: CInt
+        if isXML {
+            options = CInt(XML_PARSE_RECOVER.rawValue)
         } else {
-            return nil
+            options = CInt(HTML_PARSE_RECOVER.rawValue | HTML_PARSE_NOWARNING.rawValue | HTML_PARSE_NOERROR.rawValue)
         }
+        
+        xmlDoc = data.withUnsafeBufferPointer { dataPtr in
+            dataPtr.baseAddress!.withMemoryRebound(to: Int8.self, capacity: data.count) {
+                xmlReadMemory($0, Int32(dataPtr.count), nil, &utf8Encoding, options)
+            }
+        }
+
+        guard xmlDoc == nil else { return nil }
     }
     
     

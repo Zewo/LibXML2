@@ -287,9 +287,11 @@ public class XMLNode {
         }
         
         xPathContext.pointee.node = self.xmlNode
-
+        
         let _xPathObject = xPath.withCString { xPathPtr in
-            xmlXPathEvalExpression(UnsafePointer<xmlChar>(xPathPtr), xPathContext)
+            xPathPtr.withMemoryRebound(to: xmlChar.self, capacity: xPath.characters.count) {
+                xmlXPathEvalExpression($0, xPathContext)
+            }
         }
 
         xmlXPathFreeContext(xPathContext)
