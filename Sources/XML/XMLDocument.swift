@@ -77,7 +77,7 @@ public class XMLDocument {
             }
         }
 
-        guard xmlDoc == nil else { return nil }
+        if xmlDoc == nil { return nil }
     }
     
     
