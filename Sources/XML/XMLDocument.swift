@@ -33,7 +33,7 @@ public class XMLDocument {
     internal var isXML: Bool = true
     /// The XML/HTML data.
     private(set) public var data: Data?
-    
+
     public typealias htmlDocPtr = xmlDocPtr?
     /// The xmlDocPtr for this document
     private(set) public var xmlDoc: xmlDocPtr?
@@ -43,17 +43,16 @@ public class XMLDocument {
         get { return xmlDoc  }
         set { xmlDoc = newValue }
     }
-    
-    
-    
+
+
     // MARK: - Init
-    
+
     /**
     Initializes a XML document object with the supplied data, encoding and boolean flag.
-    
+
     - parameter data:     The XML/HTML data.
     - parameter isXML:    Whether this is a XML data, true for XML, false for HTML.
-    
+
     - returns: The initialized XML document object or nil if the object could not be initialized.
     */
     public required init?(data: Data?, isXML: Bool) {
@@ -70,7 +69,7 @@ public class XMLDocument {
         } else {
             options = CInt(HTML_PARSE_RECOVER.rawValue | HTML_PARSE_NOWARNING.rawValue | HTML_PARSE_NOERROR.rawValue)
         }
-        
+
         xmlDoc = data.withUnsafeBufferPointer { dataPtr in
             dataPtr.baseAddress!.withMemoryRebound(to: Int8.self, capacity: data.count) {
                 xmlReadMemory($0, Int32(dataPtr.count), nil, &utf8Encoding, options)
@@ -79,13 +78,13 @@ public class XMLDocument {
 
         if xmlDoc == nil { return nil }
     }
-    
-    
+
+
     // MARK: - Data Init
-    
+
     /**
     Initializes a XML document object with the supplied XML data and encoding.
-    
+
     - parameter xmlData:  The XML data.
 
     - returns: The initialized XML document object or nil if the object could not be initialized.
@@ -96,7 +95,7 @@ public class XMLDocument {
 
     /**
     Initializes a XML document object with the supplied HTML data and encoding.
-    
+
     - parameter htmlData: The HTML data.
 
     - returns: The initialized XML document object or nil if the object could not be initialized.
@@ -104,12 +103,12 @@ public class XMLDocument {
     public convenience init?(htmlData: Data) {
         self.init(data: htmlData, isXML: false)
     }
-    
+
     // MARK:  - String Init
-    
+
     /**
     Initializes a XML document object with a XML string and it's encoding.
-    
+
     - parameter xmlString: XML string.
 
     - returns: The initialized XML document object or nil if the object could not be initialized.
@@ -117,10 +116,10 @@ public class XMLDocument {
     public convenience init?(xmlString: String) {
         self.init(data: Data(xmlString), isXML: true)
     }
-    
+
     /**
     Initializes a XML document object with a HTML string and it's encoding.
-    
+
     - parameter htmlString: HTML string.
 
     - returns: The initialized XML document object or nil if the object could not be initialized.
@@ -128,17 +127,16 @@ public class XMLDocument {
     public convenience init?(htmlString: String) {
         self.init(data: Data(htmlString), isXML: false)
     }
-    
-    
+
+
     // MARK: - Deinit
     deinit {
         xmlFreeDoc(xmlDoc)
     }
-    
-    
-    
+
+
     // MARK: - Public methods
-    
+
     /// Root node of this XML document object.
     public lazy var rootNode: XMLNode? = {
         guard let rootNodePointer = xmlDocGetRootElement(self.xmlDoc) else {
@@ -146,19 +144,18 @@ public class XMLDocument {
         }
         return XMLNode(xmlNode: rootNodePointer, xmlDocument: self)
     }()
-    
+
     /**
     Perform XPath query on this document.
-    
+
     - parameter xPath: XPath query string.
-    
+
     - returns: An array of XMLNode or nil if rootNode is nil. An empty array will be returned if XPath matches no nodes.
     */
     public func xPath(_ xPath: String) -> [XMLNode]? {
         return self.rootNode?.xPath(xPath)
     }
 }
-
 
 
 // MARK: - Equatable

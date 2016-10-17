@@ -29,14 +29,14 @@ import CLibXML2
 extension String {
     /**
     Creates a new String from a xmlChar CString, using UTF-8 encoding.
-    
+
     - parameter char: xmlChar CString
-    
+
     - returns: Returns nil if the CString is NULL or if it contains ill-formed UTF-8 code unit sequences.
     */
     static func fromXmlChar(_ char: UnsafePointer<xmlChar>?) -> String? {
         guard let char = char else { return nil }
-        
+
         return String(cString: char)
     }
 }
