@@ -1,9 +1,8 @@
-@testable import C7
+import Foundation
 
-//FIXME: remove when C7 pr merged
+private let baseURL = URL(fileURLWithPath: "Tests/XMLTests/TestData/")
 extension Data {
-    public init(start: UnsafePointer<Byte>, count: Int) {
-        let buffer = UnsafeBufferPointer(start: start, count: count)
-        self.bytes = Array(buffer)
+    public init(testFile: String) {
+        try! self.init(contentsOf: URL(string: testFile, relativeTo: baseURL)!)
     }
 }

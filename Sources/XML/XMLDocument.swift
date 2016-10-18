@@ -24,9 +24,8 @@
 //  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 //  SOFTWARE.
 
-import C7
-
 import CLibXML2
+import Foundation
 
 public class XMLDocument {
     /// A flag specifies whether the data is XML or not.
@@ -70,10 +69,9 @@ public class XMLDocument {
             options = CInt(HTML_PARSE_RECOVER.rawValue | HTML_PARSE_NOWARNING.rawValue | HTML_PARSE_NOERROR.rawValue)
         }
 
-        xmlDoc = data.withUnsafeBufferPointer { dataPtr in
-            dataPtr.baseAddress!.withMemoryRebound(to: Int8.self, capacity: data.count) {
-                xmlReadMemory($0, Int32(dataPtr.count), nil, &utf8Encoding, options)
-            }
+        let bufSize = Int32(data.count)
+        xmlDoc = data.withUnsafeBytes { (buf: UnsafePointer<Int8>) in
+            xmlReadMemory(buf, bufSize, nil, &utf8Encoding, options)
         }
 
         if xmlDoc == nil { return nil }
@@ -114,7 +112,7 @@ public class XMLDocument {
     - returns: The initialized XML document object or nil if the object could not be initialized.
     */
     public convenience init?(xmlString: String) {
-        self.init(data: Data(xmlString), isXML: true)
+        self.init(data: xmlString.data(using: String.Encoding.utf8), isXML: true)
     }
 
     /**
@@ -125,7 +123,7 @@ public class XMLDocument {
     - returns: The initialized XML document object or nil if the object could not be initialized.
     */
     public convenience init?(htmlString: String) {
-        self.init(data: Data(htmlString), isXML: false)
+        self.init(data: htmlString.data(using: String.Encoding.utf8), isXML: false)
     }
 
 
